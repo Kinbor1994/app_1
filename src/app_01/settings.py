@@ -132,15 +132,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================
 
 AUTHENTICATION_BACKENDS = [
-    'keycloak_auth.backends.KeycloakBackend',
+    'django_keycloak_auth.backends.KeycloakBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Lire les variables d'environnement
 KEYCLOAK_SERVER_URL = os.getenv('KEYCLOAK_SERVER_URL', 'http://localhost:8080')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM', 'django-app')
-KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOAK_CLIENT_ID', 'django-app')
-KEYCLOAK_CLIENT_SECRET = os.getenv('KEYCLOAK_CLIENT_SECRET', '')
+KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOOK_CLIENT_ID', 'django-app')
+KEYCLOAK_CLIENT_SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET', '')
 KEYCLOAK_PUBLIC_KEY = os.getenv('KEYCLOAK_PUBLIC_KEY', '')
 
 # Configuration requise par django-keycloak-auth
@@ -148,7 +148,7 @@ KEYCLOAK_CONFIG = {
     'KEYCLOAK_SERVER_URL': KEYCLOAK_SERVER_URL,
     'KEYCLOAK_REALM': KEYCLOAK_REALM,
     'KEYCLOAK_CLIENT_ID': KEYCLOAK_CLIENT_ID,
-    'KEYCLOAK_CLIENT_SECRET': KEYCLOAK_CLIENT_SECRET,
+    'KEYCLOAK_CLIENT_SECRET_KEY': KEYCLOAK_CLIENT_SECRET_KEY,
     'KEYCLOAK_PUBLIC_KEY': KEYCLOAK_PUBLIC_KEY,
 }
 
