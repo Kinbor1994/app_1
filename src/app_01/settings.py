@@ -31,10 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'rest_framework',
-    'django_keycloak_auth',
-    
-    # Ton app
+    'auth', 
     'home',
 ]
 
@@ -46,7 +43,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_keycloak_auth.middleware.KeycloakMiddleware',
 ]
 
 ROOT_URLCONF = 'app_01.urls'
@@ -152,39 +148,12 @@ KEYCLOAK_CONFIG = {
     'KEYCLOAK_PUBLIC_KEY': KEYCLOAK_PUBLIC_KEY,
 }
 
-
-# Django REST Framework authentication setup
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'django_keycloak_auth.authentication.KeycloakAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
+AUTHENTICATION_BACKENDS = [
+    'keycloak_auth.backends.KeycloakBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Session configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 86400 # 1 jour en secondes
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-# Logging (pour déboguer)
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-    'loggers': {
-        'keycloak_auth': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
-    },
-}
