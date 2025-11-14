@@ -42,19 +42,19 @@ def callback_view(request):
     session_state = request.session.get('oauth_state')
     if not state or state != session_state:
         logger.error("State mismatch ou manquant")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Erreur de sécurité: state invalide'
         })
     
     if error:
         logger.error(f"Erreur Keycloak: {error}")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': f'Erreur d\'authentification: {error}'
         })
     
     if not code:
         logger.error("Code d'authentification manquant")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Code d\'authentification manquant'
         })
     
@@ -62,7 +62,7 @@ def callback_view(request):
     token_response = keycloak_service.exchange_code_for_token(code)
     if not token_response:
         logger.error("Impossible d'obtenir le token")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Erreur lors de l\'authentification'
         })
     
@@ -70,7 +70,7 @@ def callback_view(request):
     access_token = token_response.get('access_token')
     if not access_token:
         logger.error("Access token manquant dans la réponse")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Erreur: token manquant'
         })
     
@@ -78,7 +78,7 @@ def callback_view(request):
     userinfo = keycloak_service.get_userinfo(access_token)
     if not userinfo:
         logger.error("Impossible de récupérer les infos utilisateur")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Erreur lors de la récupération des données utilisateur'
         })
     
@@ -86,7 +86,7 @@ def callback_view(request):
     user = keycloak_service.create_or_update_user(userinfo)
     if not user:
         logger.error("Impossible de créer/mettre à jour l'utilisateur")
-        return render(request, 'auth/error.html', {
+        return render(request, 'accounts/error.html', {
             'error': 'Erreur lors de la création de l\'utilisateur'
         })
     

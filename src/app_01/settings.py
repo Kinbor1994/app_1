@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'auth', 
+    'accounts',
     'home',
 ]
 
@@ -134,6 +134,7 @@ AUTHENTICATION_BACKENDS = [
 
 # Lire les variables d'environnement
 KEYCLOAK_SERVER_URL = os.getenv('KEYCLOAK_SERVER_URL', 'http://localhost:8080')
+KEYCLOAK_REDIRECT_URI = os.getenv('KEYCLOAK_REDIRECT_URI', 'http://localhost:8000/oidc/callback/')
 KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM', 'django-app')
 KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOOK_CLIENT_ID', 'django-app')
 KEYCLOAK_CLIENT_SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET', '')
@@ -142,6 +143,7 @@ KEYCLOAK_PUBLIC_KEY = os.getenv('KEYCLOAK_PUBLIC_KEY', '')
 # Configuration requise par django-keycloak-auth
 KEYCLOAK_CONFIG = {
     'KEYCLOAK_SERVER_URL': KEYCLOAK_SERVER_URL,
+    'KEYCLOAK_REDIRECT_URI': KEYCLOAK_REDIRECT_URI,
     'KEYCLOAK_REALM': KEYCLOAK_REALM,
     'KEYCLOAK_CLIENT_ID': KEYCLOAK_CLIENT_ID,
     'KEYCLOAK_CLIENT_SECRET_KEY': KEYCLOAK_CLIENT_SECRET_KEY,

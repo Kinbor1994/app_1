@@ -23,10 +23,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # URLs d'authentification (Keycloak)
-    path('auth/', include('auth.urls')),
+    path('oidc/', include('accounts.urls')),
     
     # URLs de l'app home
-    path('', include('home.urls')),
 ]
 
 # Servir les fichiers statiques et media en développement
