@@ -11,12 +11,12 @@
     {% if user.is_authenticated %}
         <p>Hello, {{ user.username }}!</p>
         <p><a href="{% url 'profile' %}">View Profile</a></p>
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        <form action="{% url 'oidc_logout' %}" method="post" style="display: inline;">
             {% csrf_token %}
             <button type="submit">Logout</button>
         </form>
     {% else %}
-        <p><a href="{% url 'keycloak_login' %}">Login with Keycloak</a></p>
+        <p><a href="{% url 'oidc_authentication_init' %}">Login with Keycloak</a></p>
     {% endif %}
 </body>
 </html>

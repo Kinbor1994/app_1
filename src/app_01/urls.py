@@ -23,9 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # URLs d'authentification (Keycloak)
-    path('oidc/', include('accounts.urls')),
+    path('oidc/', include('mozilla_django_oidc.urls')),
     
     # URLs de l'app home
+    path('home/', include('home.urls'))
 ]
 
 # Servir les fichiers statiques et media en développement

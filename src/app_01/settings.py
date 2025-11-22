@@ -31,8 +31,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'accounts',
-    'home',
+    'mozilla_django_oidc',
+    
+    "django_htmx",
+    
 ]
 
 MIDDLEWARE = [
@@ -43,6 +45,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'app_01.urls'
@@ -128,34 +132,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ============================================
 
 AUTHENTICATION_BACKENDS = [
-    'django_keycloak_auth.backends.KeycloakBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'accounts.backends.KeycloakBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Garder le backend par défaut
 ]
 
-# Lire les variables d'environnement
-KEYCLOAK_SERVER_URL = os.getenv('KEYCLOAK_SERVER_URL', 'http://localhost:8080')
-KEYCLOAK_REDIRECT_URI = os.getenv('KEYCLOAK_REDIRECT_URI', 'http://localhost:8000/oidc/callback/')
-KEYCLOAK_REALM = os.getenv('KEYCLOAK_REALM', 'django-app')
-KEYCLOAK_CLIENT_ID = os.getenv('KEYCLOOK_CLIENT_ID', 'django-app')
-KEYCLOAK_CLIENT_SECRET_KEY = os.getenv('KEYCLOAK_CLIENT_SECRET', '')
-KEYCLOAK_PUBLIC_KEY = os.getenv('KEYCLOAK_PUBLIC_KEY', '')
+# Configuration Keycloak
+OIDC_OP_BASE_URL = os.getenv('OIDC_OP_BASE_URL', '')
+OIDC_REDIRECT_URI = os.getenv('OIDC_REDIRECT_URI', '')
+OIDC_RP_CLIENT_ID = os.getenv('OIDC_CLIENT_ID', '')
+OIDC_RP_CLIENT_SECRET = os.getenv('OIDC_CLIENT_SECRET', '')
+OIDC_OP_DISCOVERY_ENDPOINT = f"{os.getenv('OIDC_OP_BASE_URL', '')}/.well-known/openid-configuration"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/userinfo"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_OP_BASE_URL}/protocol/openid-connect/certs"
 
-# Configuration requise par django-keycloak-auth
-KEYCLOAK_CONFIG = {
-    'KEYCLOAK_SERVER_URL': KEYCLOAK_SERVER_URL,
-    'KEYCLOAK_REDIRECT_URI': KEYCLOAK_REDIRECT_URI,
-    'KEYCLOAK_REALM': KEYCLOAK_REALM,
-    'KEYCLOAK_CLIENT_ID': KEYCLOAK_CLIENT_ID,
-    'KEYCLOAK_CLIENT_SECRET_KEY': KEYCLOAK_CLIENT_SECRET_KEY,
-    'KEYCLOAK_PUBLIC_KEY': KEYCLOAK_PUBLIC_KEY,
-}
+OIDC_RP_SCOPES = 'openid email profile'
 
-AUTHENTICATION_BACKENDS = [
-    'keycloak_auth.backends.KeycloakBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_RP_IDP_SIGN_KEY = None  # Récupéré automatiquement du discovery endpoint
 
-# Session configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 86400 # 1 jour en secondes
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# URLs de redirection
+LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/oidc/authenticate'

@@ -1,7 +1,7 @@
 import logging
 import secrets
 from django.shortcuts import redirect, render
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
 from .keycloak_service import KeycloakService
@@ -82,16 +82,16 @@ def callback_view(request):
             'error': 'Erreur lors de la récupération des données utilisateur'
         })
     
-    # Créer ou mettre à jour l'utilisateur Django
-    user = keycloak_service.create_or_update_user(userinfo)
+    # Authentifier et connecter l'utilisateur via le backend personnalisé
+    user = authenticate(request, user_info=userinfo)
     if not user:
-        logger.error("Impossible de créer/mettre à jour l'utilisateur")
+        logger.error("Impossible d'authentifier l'utilisateur avec les informations de Keycloak")
         return render(request, 'accounts/error.html', {
-            'error': 'Erreur lors de la création de l\'utilisateur'
+            'error': 'Erreur lors de l\'authentification de l\'utilisateur'
         })
     
-    # Connecter l'utilisateur (sans backend, car l'utilisateur existe)
-    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+    # Connecter l'utilisateur
+    login(request, user)
     
     # Stocker le token dans la session pour les appels API futurs
     request.session['access_token'] = access_token
